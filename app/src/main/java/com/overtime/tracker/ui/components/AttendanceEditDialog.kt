@@ -111,8 +111,7 @@ fun AttendanceEditDialog(
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = ErrorRed),
                             border = ButtonDefaults.outlinedButtonBorder.copy(brush = Brush.horizontalGradient(listOf(ErrorRed.copy(alpha = 0.5f), ErrorRed.copy(alpha = 0.3f)))),
                             shape = RoundedCornerShape(12.dp)) {
-                            Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
-                            Spacer(modifier = Modifier.width(4.dp)); Text("删除", fontSize = 14.sp)
+                            Text("删除", fontSize = 14.sp)
                         }
                     }
                     OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f),

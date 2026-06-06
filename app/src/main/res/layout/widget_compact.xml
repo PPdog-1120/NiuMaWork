@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:background="@drawable/widget_background">
+
+    <TextView
+        android:id="@+id/widgetTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="未打卡"
+        android:textColor="#ECF0F5"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.03" />
+
+    <!-- 本月累计加班 -->
+    <TextView
+        android:id="@+id/widgetMonthOvertimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="本月 0h 0min"
+        android:textColor="#42A5F5"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:layout_marginTop="2dp" />
+
+    <!-- 打卡按钮（用 TextView 模拟） -->
+    <TextView
+        android:id="@+id/widgetClockBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="上班"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:background="@drawable/widget_button_bg"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:minWidth="64dp"
+        android:layout_marginTop="6dp" />
+
+</LinearLayout>

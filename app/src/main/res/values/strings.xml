@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">加班计时器</string>
+    <string name="widget_standard_name">加班计时器（标准）</string>
+    <string name="widget_compact_name">加班计时器（紧凑）</string>
+    <string name="widget_2x2_name">加班计时器（方形）</string>
+</resources>

@@ -5,10 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import com.overtime.tracker.data.AttendanceRecord
+import com.overtime.tracker.data.LeaveRecord
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.io.InputStreamReader
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,9 +26,9 @@ object DataExporter {
     // ──────────────────────────── 序列化 ────────────────────────────
 
     /**
-     * 将打卡记录序列化为 JSON 字符串
+     * 将打卡记录和请假记录序列化为 JSON 字符串
      */
-    fun toJson(records: List<AttendanceRecord>): String {
+    fun toJson(records: List<AttendanceRecord>, leaveRecords: List<LeaveRecord> = emptyList()): String {
         val root = JSONObject().apply {
             put("version", EXPORT_VERSION)
             put("exportedAt", SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(Date()))
@@ -48,13 +48,27 @@ object DataExporter {
             })
         }
         root.put("records", arr)
+
+        // 请假记录
+        val leaveArr = JSONArray()
+        for (l in leaveRecords) {
+            leaveArr.put(JSONObject().apply {
+                put("date", l.date)
+                put("type", l.type.name)
+                put("minutes", l.minutes)
+                put("reason", l.reason ?: JSONObject.NULL)
+                put("createdAt", l.createdAt)
+            })
+        }
+        root.put("leaveRecords", leaveArr)
+
         return root.toString(2)
     }
 
     // ──────────────────────────── 反序列化 ────────────────────────────
 
     /**
-     * 从 JSON 字符串解析打卡记录
+     * 从 JSON 字符串解析打卡记录和请假记录
      *
      * @return 解析结果，包含记录列表和可能的错误信息
      */
@@ -81,11 +95,34 @@ object DataExporter {
                     isRestDay = obj.optBoolean("isRestDay", false),
                     overtimeMinutes = obj.optInt("overtimeMinutes", 0),
                     type = obj.optString("type", AttendanceRecord.OVERTIME_TYPE_WORKDAY),
+                    source = AttendanceRecord.SOURCE_MANUAL,
                     createdAt = obj.optLong("createdAt", System.currentTimeMillis())
                 ))
             }
 
-            ImportResult.Success(records)
+            // 解析请假记录（兼容旧版无此字段的备份）
+            val leaveRecords = mutableListOf<LeaveRecord>()
+            val leaveArr = root.optJSONArray("leaveRecords")
+            if (leaveArr != null) {
+                for (i in 0 until leaveArr.length()) {
+                    val obj = leaveArr.getJSONObject(i)
+                    val date = obj.optString("date", "")
+                    if (date.isBlank()) continue
+
+                    val typeName = obj.optString("type", "FULL_DAY")
+                    val leaveType = try { LeaveRecord.LeaveType.valueOf(typeName) } catch (_: Exception) { LeaveRecord.LeaveType.FULL_DAY }
+
+                    leaveRecords.add(LeaveRecord(
+                        date = date,
+                        type = leaveType,
+                        minutes = obj.optInt("minutes", 0),
+                        reason = (obj.opt("reason") as? String)?.takeUnless { it == "null" || it.isBlank() },
+                        createdAt = obj.optLong("createdAt", System.currentTimeMillis())
+                    ))
+                }
+            }
+
+            ImportResult.Success(records, leaveRecords)
         } catch (e: Exception) {
             ImportResult.Error("文件格式错误: ${e.message}")
         }
@@ -96,37 +133,52 @@ object DataExporter {
     /**
      * 导出到缓存文件并返回 File
      */
-    fun exportToFile(context: Context, records: List<AttendanceRecord>): File {
+    fun exportToFile(context: Context, records: List<AttendanceRecord>, leaveRecords: List<LeaveRecord> = emptyList()): File {
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val fileName = "overtime_backup_$timestamp.json"
         val file = File(context.cacheDir, fileName)
-        file.writeText(toJson(records), Charsets.UTF_8)
+        file.writeText(toJson(records, leaveRecords), Charsets.UTF_8)
         return file
     }
 
     /**
      * 生成分享 Intent（通过 FileProvider 分享缓存文件）
+     * 返回 null 表示无法创建分享
      */
-    fun createShareIntent(context: Context, file: File): Intent {
-        val authority = context.packageName + AUTHORITY_SUFFIX
-        val uri = FileProvider.getUriForFile(context, authority, file)
-        return Intent(Intent.ACTION_SEND).apply {
-            type = "application/json"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            putExtra(Intent.EXTRA_SUBJECT, "加班数据备份")
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    fun createShareIntent(context: Context, file: File): Intent? {
+        return try {
+            if (!file.exists()) return null
+            val authority = context.packageName + AUTHORITY_SUFFIX
+            val uri = FileProvider.getUriForFile(context, authority, file)
+            Intent(Intent.ACTION_SEND).apply {
+                type = "application/json"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                putExtra(Intent.EXTRA_SUBJECT, "加班数据备份")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
     /**
-     * 从 Uri 读取并解析备份文件
+     * 从 Uri 读取并解析备份文件（限制最大 10MB 防止 OOM）
      */
     fun importFromUri(context: Context, uri: Uri): ImportResult {
         return try {
             context.contentResolver.openInputStream(uri)?.use { stream ->
-                val text = InputStreamReader(stream, Charsets.UTF_8).readText()
+                // 限制读取大小，防止恶意/异常大文件导致 OOM
+                val limitedStream = stream.buffered()
+                limitedStream.mark(10 * 1024 * 1024 + 1)
+                val bytes = limitedStream.readBytes()
+                if (bytes.size > 10 * 1024 * 1024) {
+                    return ImportResult.Error("备份文件过大（最大 10MB）")
+                }
+                val text = String(bytes, Charsets.UTF_8)
                 fromJson(text)
             } ?: ImportResult.Error("无法读取文件")
+        } catch (e: OutOfMemoryError) {
+            ImportResult.Error("文件过大，内存不足")
         } catch (e: Exception) {
             ImportResult.Error("读取文件失败: ${e.message}")
         }
@@ -135,7 +187,7 @@ object DataExporter {
     // ──────────────────────────── 结果类型 ────────────────────────────
 
     sealed class ImportResult {
-        data class Success(val records: List<AttendanceRecord>) : ImportResult()
+        data class Success(val records: List<AttendanceRecord>, val leaveRecords: List<LeaveRecord> = emptyList()) : ImportResult()
         data class Error(val message: String) : ImportResult()
     }
 }

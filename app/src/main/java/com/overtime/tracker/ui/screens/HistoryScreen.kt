@@ -1,5 +1,6 @@
 package com.overtime.tracker.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -66,13 +67,23 @@ fun HistoryScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(message) { message?.let { snackbarHostState.showSnackbar(it); viewModel.clearMessage() } }
 
+    BackHandler { navController.popBackStack() }
+
+    // 防重复点击返回
+    var navigatedBack by remember { mutableStateOf(false) }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("历史记录", color = TextPrimary) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        if (!navigatedBack) {
+                            navigatedBack = true
+                            navController.popBackStack()
+                        }
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回", tint = TextPrimary)
                     }
                 },

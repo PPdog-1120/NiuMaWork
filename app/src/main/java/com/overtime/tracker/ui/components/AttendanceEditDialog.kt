@@ -68,7 +68,11 @@ fun AttendanceEditDialog(
                 Text(if (isEditMode) "编辑记录" else "手动补录", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(20.dp))
 
-                DateSelector(dateStr, !isEditMode) { dateStr = it }
+                DateSelector(dateStr, !isEditMode) { newDate ->
+                    dateStr = newDate
+                    // 日期变更时自动同步休息日判断
+                    isRestDay = !settings.isWorkDay(newDate)
+                }
                 Spacer(modifier = Modifier.height(14.dp))
                 TimeInputRow("上班时间", clockInTime, "如 08:30", { clockInTime = it }) { showClockInPicker = true }
                 Spacer(modifier = Modifier.height(14.dp))

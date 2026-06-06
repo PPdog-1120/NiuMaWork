@@ -67,7 +67,7 @@ fun MainScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    BackHandler { (context as Activity).finish() }
+    BackHandler { (context as Activity).moveTaskToBack(true) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {

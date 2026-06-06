@@ -8,37 +8,46 @@ import java.util.*
  */
 object DateUtils {
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
-    private val timeFormat = SimpleDateFormat("HH:mm", Locale.CHINA)
-    private val displayDateFormat = SimpleDateFormat("M月d日", Locale.CHINA)
-    private val displayMonthFormat = SimpleDateFormat("yyyy年M月", Locale.CHINA)
+    // SimpleDateFormat 非线程安全，使用 ThreadLocal 保证每个线程独立实例
+    private val dateFormat = object : ThreadLocal<SimpleDateFormat>() {
+        override fun initialValue() = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
+    }
+    private val timeFormat = object : ThreadLocal<SimpleDateFormat>() {
+        override fun initialValue() = SimpleDateFormat("HH:mm", Locale.CHINA)
+    }
+    private val displayDateFormat = object : ThreadLocal<SimpleDateFormat>() {
+        override fun initialValue() = SimpleDateFormat("M月d日", Locale.CHINA)
+    }
+    private val displayMonthFormat = object : ThreadLocal<SimpleDateFormat>() {
+        override fun initialValue() = SimpleDateFormat("yyyy年M月", Locale.CHINA)
+    }
 
     /** 获取今天的日期字符串 yyyy-MM-dd */
-    fun today(): String = dateFormat.format(Date())
+    fun today(): String = dateFormat.get()!!.format(Date())
 
     /** 获取当前时间字符串 HH:mm */
-    fun nowTime(): String = timeFormat.format(Date())
+    fun nowTime(): String = timeFormat.get()!!.format(Date())
 
     /** 解析日期字符串为 Calendar */
     fun parseDate(dateStr: String): Calendar {
-        val date = dateFormat.parse(dateStr) ?: Date()
+        val date = dateFormat.get()!!.parse(dateStr) ?: Date()
         return Calendar.getInstance().apply { time = date }
     }
 
     /** Calendar 转日期字符串 */
-    fun formatDate(calendar: Calendar): String = dateFormat.format(calendar.time)
+    fun formatDate(calendar: Calendar): String = dateFormat.get()!!.format(calendar.time)
 
     /** 格式化为显示用日期 M月d日 */
     fun displayDate(dateStr: String): String {
         val cal = parseDate(dateStr)
-        return displayDateFormat.format(cal.time)
+        return displayDateFormat.get()!!.format(cal.time)
     }
 
     /** 格式化为显示用月份 yyyy年M月 */
     fun displayMonth(year: Int, month: Int): String {
         val cal = Calendar.getInstance()
         cal.set(year, month - 1, 1)
-        return displayMonthFormat.format(cal.time)
+        return displayMonthFormat.get()!!.format(cal.time)
     }
 
     /** 获取星期几的中文名 */

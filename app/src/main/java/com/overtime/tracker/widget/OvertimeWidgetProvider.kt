@@ -33,6 +33,8 @@ abstract class OvertimeWidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
+        private val widgetScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
         fun updateAllWidgets(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
             val standardIds = manager.getAppWidgetIds(ComponentName(context, OvertimeWidgetStandard::class.java))
@@ -44,7 +46,7 @@ abstract class OvertimeWidgetProvider : AppWidgetProvider() {
         }
 
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, widgetType: WidgetType = WidgetType.STANDARD) {
-            CoroutineScope(Dispatchers.IO).launch {
+            widgetScope.launch {
                 try {
                     val dao = AppDatabase.getInstance(context).attendanceDao()
                     val today = DateUtils.today()

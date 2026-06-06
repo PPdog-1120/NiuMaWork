@@ -8,6 +8,7 @@ import com.overtime.tracker.data.AttendanceRecord
 import com.overtime.tracker.data.LeaveRecord
 import com.overtime.tracker.data.UserSettings
 import com.overtime.tracker.util.DateUtils
+import com.overtime.tracker.util.OvertimeCalculator
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -110,10 +111,29 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
             } catch (e: IllegalArgumentException) {
                 _message.value = "时间格式不正确（应为 HH:mm）"; return@launch
             }
-            if (!record.clockOutTime.isNullOrBlank() && record.overtimeMinutes < 0) {
-                _message.value = "加班时长不能为负数"; return@launch
+
+            // 重新判断是否为休息日
+            val currentSettings = settings.value
+            val isRestDay = !currentSettings.isWorkDay(record.date)
+            val type = if (isRestDay) AttendanceRecord.OVERTIME_TYPE_REST_DAY else AttendanceRecord.OVERTIME_TYPE_WORKDAY
+
+            // 重新计算加班时长
+            val overtimeMinutes = if (!record.clockOutTime.isNullOrBlank()) {
+                val overtime = OvertimeCalculator.calculateOvertime(
+                    record.clockInTime, record.clockOutTime, currentSettings, isRestDay
+                )
+                if (overtime == -2) { _message.value = "打卡数据异常"; return@launch }
+                if (overtime < 0) 0 else overtime
+            } else {
+                0
             }
-            dao.upsert(record)
+
+            val updated = record.copy(
+                isRestDay = isRestDay,
+                type = type,
+                overtimeMinutes = overtimeMinutes
+            )
+            dao.upsert(updated)
             _message.value = "保存成功 ✓"
         }
     }

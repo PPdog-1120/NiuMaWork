@@ -109,7 +109,10 @@ class WidgetClockReceiver : BroadcastReceiver() {
     }
 
     private fun notifyActivity(context: Context) {
-        context.sendBroadcast(Intent(ACTION_WIDGET_CLOCK_CHANGED))
+        val intent = Intent(ACTION_WIDGET_CLOCK_CHANGED).apply {
+            setPackage(context.packageName)
+        }
+        context.sendBroadcast(intent)
     }
 
     private fun showToast(context: Context, message: String) {

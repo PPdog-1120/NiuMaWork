@@ -37,12 +37,16 @@ class SettingsDataStore(private val context: Context) {
         private val KEY_FULL_DAY_MINUTES = intPreferencesKey("full_day_minutes")
         private val KEY_HALF_DAY_MINUTES = intPreferencesKey("half_day_minutes")
 
+        // 工作日设置（逗号分隔的 key，如 "1,2,3,4,5"）
+        private val KEY_WORK_DAYS = stringPreferencesKey("work_days")
+
         // 其他
         private val KEY_CROSS_DAY = booleanPreferencesKey("cross_day_support")
     }
 
     /** 获取设置的响应式数据流 */
     val settingsFlow: Flow<UserSettings> = context.dataStore.data.map { prefs ->
+        val workDays = parseWorkDays(prefs[KEY_WORK_DAYS])
         UserSettings(
             flexStart = prefs[KEY_FLEX_START] ?: "08:30",
             flexEnd = prefs[KEY_FLEX_END] ?: "09:00",
@@ -55,6 +59,7 @@ class SettingsDataStore(private val context: Context) {
             weekendDinnerDeduct = prefs[KEY_WEEKEND_DINNER_DEDUCT] ?: 30,
             fullDayMinutes = prefs[KEY_FULL_DAY_MINUTES] ?: 480,
             halfDayMinutes = prefs[KEY_HALF_DAY_MINUTES] ?: 240,
+            workDays = workDays,
             crossDaySupport = prefs[KEY_CROSS_DAY] ?: false
         )
     }
@@ -73,7 +78,21 @@ class SettingsDataStore(private val context: Context) {
             prefs[KEY_WEEKEND_DINNER_DEDUCT] = settings.weekendDinnerDeduct
             prefs[KEY_FULL_DAY_MINUTES] = settings.fullDayMinutes
             prefs[KEY_HALF_DAY_MINUTES] = settings.halfDayMinutes
+            prefs[KEY_WORK_DAYS] = serializeWorkDays(settings.workDays)
             prefs[KEY_CROSS_DAY] = settings.crossDaySupport
         }
+    }
+
+    /** 将 workDays Map 序列化为 "1,2,3,4,5" 格式 */
+    private fun serializeWorkDays(workDays: Map<Int, Boolean>): String {
+        return workDays.filter { it.value }.keys.sorted().joinToString(",")
+    }
+
+    /** 从 "1,2,3,4,5" 格式解析 workDays Map */
+    private fun parseWorkDays(serialized: String?): Map<Int, Boolean> {
+        val default = mapOf(0 to false, 1 to true, 2 to true, 3 to true, 4 to true, 5 to true, 6 to false)
+        if (serialized.isNullOrBlank()) return default
+        val activeDays = serialized.split(",").mapNotNull { it.trim().toIntOrNull() }.toSet()
+        return (0..6).associateWith { it in activeDays }
     }
 }

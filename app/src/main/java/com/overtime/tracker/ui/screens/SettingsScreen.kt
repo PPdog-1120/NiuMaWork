@@ -1,5 +1,6 @@
 package com.overtime.tracker.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
@@ -63,12 +64,22 @@ fun SettingsScreen(
     var showFullDayPicker by remember { mutableStateOf(false) }
     var showHalfDayPicker by remember { mutableStateOf(false) }
 
+    BackHandler { navController.popBackStack() }
+
+    // 防重复点击返回
+    var navigatedBack by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("设置", color = TextPrimary) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        if (!navigatedBack) {
+                            navigatedBack = true
+                            navController.popBackStack()
+                        }
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回", tint = TextPrimary)
                     }
                 },

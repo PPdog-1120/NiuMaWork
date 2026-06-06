@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.overtime.tracker.viewmodel.MainViewModel
 
 /**
@@ -42,7 +43,11 @@ fun ExportImportScreen(viewModel: MainViewModel) {
     }
     LaunchedEffect(exportedIntent) {
         exportedIntent?.let {
-            context.startActivity(Intent.createChooser(it, "分享加班数据备份"))
+            try {
+                context.startActivity(Intent.createChooser(it, "分享加班数据备份"))
+            } catch (_: Exception) {
+                // 部分设备无可用分享目标
+            }
             viewModel.resetExportState()
         }
     }
@@ -92,13 +97,7 @@ fun ExportImportScreen(viewModel: MainViewModel) {
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1565C0))
                 ) {
                     if (exportState is MainViewModel.ExportState.Loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(18.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text("导出中…")
+                        Text("⏳ 导出中…", color = Color.White, fontSize = 14.sp)
                     } else {
                         Text("导出全部记录")
                     }
@@ -149,12 +148,7 @@ fun ExportImportScreen(viewModel: MainViewModel) {
                     border = BorderStroke(1.dp, Color(0xFF42A5F5))
                 ) {
                     if (importState is MainViewModel.ImportState.Loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(18.dp),
-                            strokeWidth = 2.dp
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text("导入中…")
+                        Text("⏳ 导入中…", fontSize = 14.sp)
                     } else {
                         Text("选择备份文件")
                     }

@@ -237,14 +237,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             _exportState.value = ExportState.Loading
             try {
                 val records = dao.getAllOnce()
-                if (records.isEmpty()) {
+                val leaveRecords = leaveDao.getAllOnce()
+                if (records.isEmpty() && leaveRecords.isEmpty()) {
                     _exportState.value = ExportState.Error("没有可导出的数据")
                     return@launch
                 }
                 val context = getApplication<Application>()
-                val file = DataExporter.exportToFile(context, records)
+                val file = DataExporter.exportToFile(context, records, leaveRecords)
                 val shareIntent = DataExporter.createShareIntent(context, file)
-                _exportState.value = ExportState.Ready(file, shareIntent, records.size)
+                if (shareIntent == null) {
+                    _exportState.value = ExportState.Error("无法创建分享，请检查存储权限")
+                    return@launch
+                }
+                _exportState.value = ExportState.Ready(file, shareIntent, records.size + leaveRecords.size)
             } catch (e: Exception) {
                 _exportState.value = ExportState.Error("导出失败: ${e.message}")
             }
@@ -262,13 +267,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         _importState.value = ImportState.Error(result.message)
                     }
                     is DataExporter.ImportResult.Success -> {
-                        if (result.records.isEmpty()) {
+                        if (result.records.isEmpty() && result.leaveRecords.isEmpty()) {
                             _importState.value = ImportState.Error("备份文件中没有记录")
                             return@launch
                         }
-                        dao.insertAll(result.records)
+
+                        // 按日期去重：已存在则沿用其 id（更新），不存在则插入
+                        var importedCount = 0
+                        for (record in result.records) {
+                            val existing = dao.getByDate(record.date)
+                            val toSave = if (existing != null) record.copy(id = existing.id) else record
+                            dao.upsert(toSave)
+                            importedCount++
+                        }
+                        for (leave in result.leaveRecords) {
+                            val existing = leaveDao.getByDate(leave.date)
+                            val toSave = if (existing != null) leave.copy(id = existing.id) else leave
+                            leaveDao.upsert(toSave)
+                            importedCount++
+                        }
+
                         refreshAccumulated()
-                        _importState.value = ImportState.Success(result.records.size)
+                        _importState.value = ImportState.Success(importedCount)
                     }
                 }
             } catch (e: Exception) {

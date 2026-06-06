@@ -34,9 +34,6 @@ import com.overtime.tracker.viewmodel.StatsViewModel
 
 private val EaseOutCubic = CubicBezierEasing(0.33f, 1f, 0.68f, 1f)
 
-/**
- * ç»Ÿè®¡é¡µé¢ï¼ˆv1.3 æ›´æ–°ï¼šå‡€åŠ ç­ã€è¯·å‡ç»Ÿè®¡ï¼‰
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatsScreen(
@@ -58,15 +55,15 @@ fun StatsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("ç»Ÿè®¡", color = TextPrimary) },
+                title = { Text("Í³¼Æ", color = TextPrimary) },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.refreshAll(); navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "è¿”å›ž", tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "·µ»Ø", tint = TextPrimary)
                     }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.refreshAll() }) {
-                        Icon(Icons.Default.Refresh, "åˆ·æ–°", tint = TextPrimary)
+                        Icon(Icons.Default.Refresh, "Ë¢ÐÂ", tint = TextPrimary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -80,23 +77,16 @@ fun StatsScreen(
                     .padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // æ¦‚è§ˆå¡ç‰‡
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StatCard("ä»Šæ—¥åŠ ç­", todayOvertime, Modifier.weight(1f), Icons.Default.Today, AccentBlue)
-                    StatCard("æœ¬å‘¨ç´¯è®¡", weekOvertime, Modifier.weight(1f), Icons.Default.DateRange, LightBlue)
+                    StatCard("½ñÈÕ¼Ó°à", todayOvertime, Modifier.weight(1f), Icons.Default.Today, AccentBlue)
+                    StatCard("±¾ÖÜÀÛ¼Æ", weekOvertime, Modifier.weight(1f), Icons.Default.DateRange, LightBlue)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StatCard("æœ¬æœˆç´¯è®¡", monthOvertime, Modifier.weight(1f), Icons.Default.CalendarMonth, CyanAccent)
-                    StatCard("æœ¬å¹´ç´¯è®¡", yearOvertime, Modifier.weight(1f), Icons.Default.CalendarToday, SoftBlue)
+                    StatCard("±¾ÔÂÀÛ¼Æ", monthOvertime, Modifier.weight(1f), Icons.Default.CalendarMonth, CyanAccent)
+                    StatCard("±¾ÄêÀÛ¼Æ", yearOvertime, Modifier.weight(1f), Icons.Default.CalendarToday, SoftBlue)
                 }
-
-                // å‡€åŠ ç­å¡ç‰‡
-                NetOvertimeCard(monthOvertime, monthLeave, monthNetOvertime, yearOvertime, yearNetOvertime)
-
-                // è¯¦ç»†ç»Ÿè®¡
+                NetOvertimeCard(monthLeave, monthNetOvertime, yearNetOvertime)
                 DetailStatsCard(monthOvertimeDays, monthWorkdayOvertime, monthRestDayOvertime, dailyAvgOvertime, monthLeave)
-
-                // åŠ ç­æž„æˆ
                 if (monthOvertime > 0) {
                     OvertimeCompositionCard(monthOvertime, monthWorkdayOvertime, monthRestDayOvertime)
                 }
@@ -105,37 +95,33 @@ fun StatsScreen(
     }
 }
 
-/**
- * å‡€åŠ ç­å¡ç‰‡ï¼ˆv1.3 æ–°å¢žï¼‰
- */
 @Composable
 private fun NetOvertimeCard(
-    monthOvertime: Int, monthLeave: Int, monthNetOvertime: Int,
-    yearOvertime: Int, yearNetOvertime: Int
+    monthLeave: Int, monthNetOvertime: Int,
+    yearNetOvertime: Int
 ) {
     Box(modifier = Modifier.fillMaxWidth().shadow(6.dp, RoundedCornerShape(16.dp), ambientColor = GlowBlue.copy(alpha = 0.06f))) {
         Card(modifier = Modifier.fillMaxWidth().border(1.dp, CardBorder, RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.Transparent)) {
             Box(modifier = Modifier.fillMaxWidth().background(CardGradient)) {
                 Column(modifier = Modifier.padding(24.dp)) {
-                    Text("å‡€åŠ ç­ç»Ÿè®¡", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("¾»¼Ó°àÍ³¼Æ", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
-
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("æœ¬æœˆ", color = TextTertiary, fontSize = 13.sp)
+                            Text("±¾ÔÂ", color = TextTertiary, fontSize = 13.sp)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(OvertimeCalculator.formatOvertimeWithSign(monthNetOvertime),
                                 color = if (monthNetOvertime >= 0) CyanAccent else ErrorRed,
                                 fontSize = 20.sp, fontWeight = FontWeight.Bold)
                             if (monthLeave > 0) {
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text("è¯·å‡ ${OvertimeCalculator.formatOvertime(monthLeave)}", color = WarningOrange, fontSize = 12.sp)
+                                Text("Çë¼Ù ${OvertimeCalculator.formatOvertime(monthLeave)}", color = WarningOrange, fontSize = 12.sp)
                             }
                         }
                         Box(modifier = Modifier.width(1.dp).height(60.dp).background(GlowBlue.copy(alpha = 0.2f)))
                         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                            Text("æœ¬å¹´", color = TextTertiary, fontSize = 13.sp)
+                            Text("±¾Äê", color = TextTertiary, fontSize = 13.sp)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(OvertimeCalculator.formatOvertimeWithSign(yearNetOvertime),
                                 color = if (yearNetOvertime >= 0) SoftBlue else ErrorRed,
@@ -194,22 +180,22 @@ private fun DetailStatsCard(
             shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.Transparent)) {
             Box(modifier = Modifier.fillMaxWidth().background(CardGradient)) {
                 Column(modifier = Modifier.padding(24.dp)) {
-                    Text("æœ¬æœˆè¯¦ç»†ç»Ÿè®¡", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("±¾ÔÂÏêÏ¸Í³¼Æ", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(20.dp))
-                    AnimatedStatRow("åŠ ç­å¤©æ•°", "${monthOvertimeDays} å¤©")
+                    AnimatedStatRow("¼Ó°àÌìÊý", "${monthOvertimeDays} Ìì")
                     Spacer(modifier = Modifier.height(14.dp))
-                    AnimatedStatRow("å·¥ä½œæ—¥å»¶æ—¶", OvertimeCalculator.formatOvertime(monthWorkdayOvertime))
+                    AnimatedStatRow("¹¤×÷ÈÕÑÓÊ±", OvertimeCalculator.formatOvertime(monthWorkdayOvertime))
                     Spacer(modifier = Modifier.height(14.dp))
-                    AnimatedStatRow("ä¼‘æ¯æ—¥åŠ ç­", OvertimeCalculator.formatOvertime(monthRestDayOvertime))
+                    AnimatedStatRow("ÐÝÏ¢ÈÕ¼Ó°à", OvertimeCalculator.formatOvertime(monthRestDayOvertime))
                     if (monthLeave > 0) {
                         Spacer(modifier = Modifier.height(14.dp))
-                        AnimatedStatRow("è¯·å‡æ‰£é™¤", OvertimeCalculator.formatOvertime(monthLeave))
+                        AnimatedStatRow("Çë¼Ù¿Û³ý", OvertimeCalculator.formatOvertime(monthLeave))
                     }
                     Spacer(modifier = Modifier.height(14.dp))
                     Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(
                         Brush.horizontalGradient(listOf(Color.Transparent, GlowBlue.copy(alpha = 0.3f), Color.Transparent))))
                     Spacer(modifier = Modifier.height(14.dp))
-                    AnimatedStatRow("æ—¥å‡åŠ ç­", OvertimeCalculator.formatOvertime(dailyAvgOvertime))
+                    AnimatedStatRow("ÈÕ¾ù¼Ó°à", OvertimeCalculator.formatOvertime(dailyAvgOvertime))
                 }
             }
         }
@@ -238,22 +224,22 @@ private fun OvertimeCompositionCard(monthOvertime: Int, monthWorkdayOvertime: In
             shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.Transparent)) {
             Box(modifier = Modifier.fillMaxWidth().background(CardGradient)) {
                 Column(modifier = Modifier.padding(24.dp)) {
-                    Text("åŠ ç­æž„æˆ", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("¼Ó°à¹¹³É", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(20.dp))
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         RingChart(animatedWorkday, animatedRestDay, Modifier.size(100.dp))
                         Spacer(modifier = Modifier.width(24.dp))
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            ChartLegendItem(AccentBlue, "å·¥ä½œæ—¥å»¶æ—¶", workdayPercent.toInt(), OvertimeCalculator.formatOvertime(monthWorkdayOvertime))
-                            ChartLegendItem(WarningOrange, "ä¼‘æ¯æ—¥åŠ ç­", restDayPercent.toInt(), OvertimeCalculator.formatOvertime(monthRestDayOvertime))
+                            ChartLegendItem(AccentBlue, "¹¤×÷ÈÕÑÓÊ±", workdayPercent.toInt(), OvertimeCalculator.formatOvertime(monthWorkdayOvertime))
+                            ChartLegendItem(WarningOrange, "ÐÝÏ¢ÈÕ¼Ó°à", restDayPercent.toInt(), OvertimeCalculator.formatOvertime(monthRestDayOvertime))
                         }
                     }
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text("å·¥ä½œæ—¥å»¶æ—¶ ${workdayPercent.toInt()}%", color = TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text("¹¤×÷ÈÕÑÓÊ± ${workdayPercent.toInt()}%", color = TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                     Spacer(modifier = Modifier.height(6.dp))
                     AnimatedLinearProgress(animatedWorkday, AccentBlue, SurfaceLight)
                     Spacer(modifier = Modifier.height(14.dp))
-                    Text("ä¼‘æ¯æ—¥åŠ ç­ ${restDayPercent.toInt()}%", color = TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text("ÐÝÏ¢ÈÕ¼Ó°à ${restDayPercent.toInt()}%", color = TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                     Spacer(modifier = Modifier.height(6.dp))
                     AnimatedLinearProgress(animatedRestDay, WarningOrange, SurfaceLight)
                 }
@@ -265,13 +251,43 @@ private fun OvertimeCompositionCard(monthOvertime: Int, monthWorkdayOvertime: In
 @Composable
 private fun RingChart(workdayFraction: Float, restDayFraction: Float, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
-        val strokeWidth = 14.dp.toPx(); val sizeOffset = strokeWidth / 2
-        val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth); val topLeft = Offset(sizeOffset, sizeOffset)
-        drawArc(SurfaceLight.copy(alpha = 0.5f), -90f, 360f, false, topLeft, arcSize, Stroke(strokeWidth, cap = StrokeCap.Round))
+        val strokeWidth = 14.dp.toPx()
+        val sizeOffset = strokeWidth / 2
+        val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
+        val topLeft = Offset(sizeOffset, sizeOffset)
+        drawArc(
+            color = SurfaceLight.copy(alpha = 0.5f),
+            startAngle = -90f,
+            sweepAngle = 360f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = Stroke(strokeWidth, cap = StrokeCap.Round)
+        )
         val workdaySweep = workdayFraction * 360f
-        if (workdaySweep > 0f) drawArc(AccentBlue, -90f, workdaySweep, false, topLeft, arcSize, Stroke(strokeWidth, cap = StrokeCap.Round))
+        if (workdaySweep > 0f) {
+            drawArc(
+                color = AccentBlue,
+                startAngle = -90f,
+                sweepAngle = workdaySweep,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(strokeWidth, cap = StrokeCap.Round)
+            )
+        }
         val restDaySweep = restDayFraction * 360f
-        if (restDaySweep > 0f) drawArc(WarningOrange, -90f + workdaySweep, restDaySweep, false, topLeft, arcSize, Stroke(strokeWidth, cap = StrokeCap.Round))
+        if (restDaySweep > 0f) {
+            drawArc(
+                color = WarningOrange,
+                startAngle = -90f + workdaySweep,
+                sweepAngle = restDaySweep,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(strokeWidth, cap = StrokeCap.Round)
+            )
+        }
     }
 }
 

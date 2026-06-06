@@ -1,0 +1,58 @@
+[
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/layout_widget_standard.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/layout/widget_standard.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/layout_widget_compact.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/layout/widget_compact.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/xml_overtime_widget_standard_info.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/xml/overtime_widget_standard_info.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/drawable_widget_button_disabled.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/drawable/widget_button_disabled.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/xml_overtime_widget_compact_info.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/xml/overtime_widget_compact_info.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/drawable_widget_background.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/drawable/widget_background.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/xml_overtime_widget_2x2_info.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/xml/overtime_widget_2x2_info.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/xml_file_paths.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/layout_widget_2x2.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/layout/widget_2x2.xml"
+    },
+    {
+        "merged": "com.overtime.tracker.app-merged_res-67:/drawable_widget_button_bg.xml.flat",
+        "source": "com.overtime.tracker.app-main-69:/drawable/widget_button_bg.xml"
+    }
+]

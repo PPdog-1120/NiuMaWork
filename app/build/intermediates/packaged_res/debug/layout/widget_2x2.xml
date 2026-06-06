@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="14dp"
+    android:background="@drawable/widget_background">
+
+    <!-- 打卡时间 -->
+    <TextView
+        android:id="@+id/widgetTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="未打卡"
+        android:textColor="#ECF0F5"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.03" />
+
+    <!-- 今日加班 -->
+    <TextView
+        android:id="@+id/widgetOvertimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="加班 0h 0min"
+        android:textColor="#8EA4BF"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- 本月累计加班 -->
+    <TextView
+        android:id="@+id/widgetMonthOvertimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="本月 0h 0min"
+        android:textColor="#42A5F5"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginTop="2dp" />
+
+    <!-- 打卡按钮 -->
+    <TextView
+        android:id="@+id/widgetClockBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:text="上班打卡"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:background="@drawable/widget_button_bg"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:minWidth="72dp"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

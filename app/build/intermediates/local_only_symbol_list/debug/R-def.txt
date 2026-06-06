@@ -1,0 +1,28 @@
+R_DEF: Internal format may change without notice
+local
+color accent_blue
+color deep_blue
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+drawable widget_background
+drawable widget_button_bg
+drawable widget_button_disabled
+id widgetClockBtn
+id widgetInfoLayout
+id widgetMonthOvertimeText
+id widgetOvertimeText
+id widgetTimeText
+layout widget_2x2
+layout widget_compact
+layout widget_standard
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string widget_2x2_name
+string widget_compact_name
+string widget_standard_name
+style Theme.OvertimeTracker
+xml file_paths
+xml overtime_widget_2x2_info
+xml overtime_widget_compact_info
+xml overtime_widget_standard_info

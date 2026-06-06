@@ -32,6 +32,7 @@ import java.util.Calendar
 /**
  * 请假记录编辑/新增对话框（v1.3 新增）
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LeaveEditDialog(
     date: String,

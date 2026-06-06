@@ -1,5 +1,7 @@
 package com.overtime.tracker.ui.screens
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -417,5 +419,3 @@ private fun getOvertimeColor(minutes: Int): Color = when {
 private fun getOvertimeGlowColor(minutes: Int): Color = when {
     minutes <= 60 -> AccentBlue; minutes <= 180 -> LightBlue; else -> CyanAccent
 }
-
-

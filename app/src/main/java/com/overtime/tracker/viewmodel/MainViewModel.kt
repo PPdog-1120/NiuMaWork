@@ -160,12 +160,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * ON_RESUME 兜底：防止进程被杀恢复后日期不一致
+     * 同时强制刷新今日记录（解决从其他页面导入数据后返回主页不更新的问题）
      */
     fun refreshTodayIfNeeded() {
         val today = DateUtils.today()
         if (today != currentDate) {
             subscribeToToday()
             scheduleMidnightRefresh()
+        }
+        // 强制从数据库刷新今日记录，确保导入等外部操作后数据同步
+        viewModelScope.launch {
+            val record = dao.getByDate(today)
+            _todayRecord.value = record
         }
     }
 
@@ -351,6 +357,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         }
 
                         refreshAccumulated()
+                        // BUG #3 修复：导入后刷新今日记录，防止主页显示旧状态
+                        val todayRecord = dao.getByDate(DateUtils.today())
+                        _todayRecord.value = todayRecord
                         _importState.value = ImportState.Success(importedCount)
                     }
                 }

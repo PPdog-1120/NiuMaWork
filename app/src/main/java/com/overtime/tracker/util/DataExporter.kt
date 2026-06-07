@@ -44,6 +44,7 @@ object DataExporter {
                 put("isRestDay", r.isRestDay)
                 put("overtimeMinutes", r.overtimeMinutes)
                 put("type", r.type)
+                put("source", r.source)
                 put("createdAt", r.createdAt)
             })
         }
@@ -95,7 +96,7 @@ object DataExporter {
                     isRestDay = obj.optBoolean("isRestDay", false),
                     overtimeMinutes = obj.optInt("overtimeMinutes", 0),
                     type = obj.optString("type", AttendanceRecord.OVERTIME_TYPE_WORKDAY),
-                    source = AttendanceRecord.SOURCE_MANUAL,
+                    source = obj.optString("source", AttendanceRecord.SOURCE_MANUAL),
                     createdAt = obj.optLong("createdAt", System.currentTimeMillis())
                 ))
             }

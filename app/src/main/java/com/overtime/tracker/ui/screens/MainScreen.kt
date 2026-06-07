@@ -47,6 +47,8 @@ private val EaseOutCubic = CubicBezierEasing(0.33f, 1f, 0.68f, 1f)
 
 /**
  * 主页面 - 打卡页面（v1.3 更新：弹性归一化、净加班）
+ *
+ * 修复：ON_RESUME 时检测日期变化，自动刷新今日打卡状态
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +74,10 @@ fun MainScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) viewModel.refreshAccumulated()
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshTodayIfNeeded()   // ← 跨天修复：检测日期变化
+                viewModel.refreshAccumulated()
+            }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }

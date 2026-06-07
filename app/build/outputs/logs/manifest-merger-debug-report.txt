@@ -1,20 +1,20 @@
 -- Merging decision tree log ---
 provider#androidx.core.content.FileProvider
-INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:96:9-104:20
+INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:105:9-113:20
 	android:grantUriPermissions
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:100:13-47
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:109:13-47
 	android:authorities
 		INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:98:13-64
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:107:13-64
 	android:exported
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:99:13-37
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:108:13-37
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:97:13-62
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:106:13-62
 manifest
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-107:12
-INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-107:12
-INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-107:12
-INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-107:12
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-116:12
+INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-116:12
+INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-116:12
+INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:2:1-116:12
 MERGED from [androidx.navigation:navigation-common:2.7.6] C:\Users\14791\.gradle\caches\transforms-3\79d2cf1c4dfd72cab41f74519ca9f08e\transformed\navigation-common-2.7.6\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-runtime:2.7.6] C:\Users\14791\.gradle\caches\transforms-3\666b1c44f39e17184e7c2ad61bacd14f\transformed\navigation-runtime-2.7.6\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] C:\Users\14791\.gradle\caches\transforms-3\3412b54192bdd6ac91805dd4e97be292\transformed\navigation-common-ktx-2.7.6\AndroidManifest.xml:2:1-7:12
@@ -107,8 +107,8 @@ ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:10:5-77
 	android:name
 		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:10:22-74
 application
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:12:5-106:19
-INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:12:5-106:19
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:12:5-115:19
+INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:12:5-115:19
 MERGED from [androidx.glance:glance-appwidget:1.0.0] C:\Users\14791\.gradle\caches\transforms-3\5e3200e82cb61de2969ba711ae5ef7af\transformed\glance-appwidget-1.0.0\AndroidManifest.xml:22:5-54:19
 MERGED from [androidx.glance:glance-appwidget:1.0.0] C:\Users\14791\.gradle\caches\transforms-3\5e3200e82cb61de2969ba711ae5ef7af\transformed\glance-appwidget-1.0.0\AndroidManifest.xml:22:5-54:19
 MERGED from [androidx.compose.ui:ui-test-manifest:1.6.0] C:\Users\14791\.gradle\caches\transforms-3\b6a4a04dec6a2ade901d2bea50b91ff7\transformed\ui-test-manifest-1.6.0\AndroidManifest.xml:22:5-26:19
@@ -172,79 +172,87 @@ ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:29:17-77
 	android:name
 		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:29:27-74
 receiver#com.overtime.tracker.widget.OvertimeWidgetStandard
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:34:9-48:20
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:35:9-51:20
 	android:label
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:37:13-57
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:38:13-57
 	android:exported
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:36:13-36
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:37:13-36
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:35:13-58
-intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE+action:name:android.intent.action.DATE_CHANGED+action:name:android.intent.action.SCREEN_ON+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:38:13-44:29
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:36:13-58
+intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE+action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.DATE_CHANGED+action:name:android.intent.action.SCREEN_ON+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET+action:name:com.overtime.tracker.ACTION_MIDNIGHT_REFRESH
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:39:13-47:29
 action#android.appwidget.action.APPWIDGET_UPDATE
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:39:17-84
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:40:17-84
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:39:25-81
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:40:25-81
 action#android.intent.action.TIME_SET
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:40:17-73
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:41:17-73
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:40:25-70
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:41:25-70
 action#android.intent.action.DATE_CHANGED
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:41:17-77
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:42:17-77
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:41:25-74
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:42:25-74
 action#android.intent.action.TIMEZONE_CHANGED
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:42:17-81
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:43:17-81
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:42:25-78
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:43:25-78
 action#android.intent.action.SCREEN_ON
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:43:17-74
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:44:17-74
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:43:25-71
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:44:25-71
+action#android.intent.action.BOOT_COMPLETED
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:45:17-79
+	android:name
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:45:25-76
+action#com.overtime.tracker.ACTION_MIDNIGHT_REFRESH
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:46:17-87
+	android:name
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:46:25-84
 meta-data#android.appwidget.provider
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:45:13-47:73
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:48:13-50:73
 	android:resource
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:47:17-70
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:50:17-70
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:46:17-58
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:49:17-58
 receiver#com.overtime.tracker.widget.OvertimeWidgetCompact
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:51:9-65:20
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:55:9-71:20
 	android:label
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:54:13-56
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:58:13-56
 	android:exported
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:53:13-36
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:57:13-36
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:52:13-57
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:56:13-57
 receiver#com.overtime.tracker.widget.OvertimeWidgetSquare
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:68:9-82:20
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:75:9-91:20
 	android:label
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:71:13-52
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:78:13-52
 	android:exported
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:70:13-36
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:77:13-36
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:69:13-56
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:76:13-56
 receiver#com.overtime.tracker.widget.WidgetClockReceiver
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:86:9-93:20
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:95:9-102:20
 	android:exported
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:88:13-37
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:97:13-37
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:87:13-55
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:96:13-55
 intent-filter#action:name:com.overtime.tracker.ACTION_CLOCK_IN+action:name:com.overtime.tracker.ACTION_CLOCK_OUT
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:89:13-92:29
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:98:13-101:29
 action#com.overtime.tracker.ACTION_CLOCK_IN
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:90:17-79
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:99:17-79
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:90:25-76
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:99:25-76
 action#com.overtime.tracker.ACTION_CLOCK_OUT
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:91:17-80
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:100:17-80
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:91:25-77
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:100:25-77
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:101:13-103:54
+ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:110:13-112:54
 	android:resource
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:103:17-51
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:112:17-51
 	android:name
-		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:102:17-67
+		ADDED from D:\NiuMaWork\app\src\main\AndroidManifest.xml:111:17-67
 uses-sdk
 INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from D:\NiuMaWork\app\src\main\AndroidManifest.xml
@@ -639,10 +647,6 @@ ADDED from [androidx.work:work-runtime:2.7.1] C:\Users\14791\.gradle\caches\tran
 		ADDED from [androidx.work:work-runtime:2.7.1] C:\Users\14791\.gradle\caches\transforms-3\812b5de69cd76931d123923cbd8146a8\transformed\work-runtime-2.7.1\AndroidManifest.xml:111:13-88
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
 ADDED from [androidx.work:work-runtime:2.7.1] C:\Users\14791\.gradle\caches\transforms-3\812b5de69cd76931d123923cbd8146a8\transformed\work-runtime-2.7.1\AndroidManifest.xml:116:13-120:29
-action#android.intent.action.BOOT_COMPLETED
-ADDED from [androidx.work:work-runtime:2.7.1] C:\Users\14791\.gradle\caches\transforms-3\812b5de69cd76931d123923cbd8146a8\transformed\work-runtime-2.7.1\AndroidManifest.xml:117:17-79
-	android:name
-		ADDED from [androidx.work:work-runtime:2.7.1] C:\Users\14791\.gradle\caches\transforms-3\812b5de69cd76931d123923cbd8146a8\transformed\work-runtime-2.7.1\AndroidManifest.xml:117:25-76
 receiver#androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver
 ADDED from [androidx.work:work-runtime:2.7.1] C:\Users\14791\.gradle\caches\transforms-3\812b5de69cd76931d123923cbd8146a8\transformed\work-runtime-2.7.1\AndroidManifest.xml:122:9-131:20
 	android:enabled

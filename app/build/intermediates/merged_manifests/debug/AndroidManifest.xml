@@ -48,7 +48,10 @@
             </intent-filter>
         </activity>
 
-        <!-- 桌面小组件 - 标准版 4×1 -->
+        <!--
+             桌面小组件 - 标准版 4×1
+             BUG #3 修复：增加 BOOT_COMPLETED 和 ACTION_MIDNIGHT_REFRESH
+        -->
         <receiver
             android:name="com.overtime.tracker.widget.OvertimeWidgetStandard"
             android:exported="true"
@@ -59,6 +62,8 @@
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.overtime.tracker.ACTION_MIDNIGHT_REFRESH" />
             </intent-filter>
 
             <meta-data
@@ -66,7 +71,10 @@
                 android:resource="@xml/overtime_widget_standard_info" />
         </receiver>
 
-        <!-- 桌面小组件 - 紧凑版 2×1 -->
+        <!--
+             桌面小组件 - 紧凑版 2×1
+             BUG #3 修复：增加 BOOT_COMPLETED 和 ACTION_MIDNIGHT_REFRESH
+        -->
         <receiver
             android:name="com.overtime.tracker.widget.OvertimeWidgetCompact"
             android:exported="true"
@@ -77,6 +85,8 @@
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.overtime.tracker.ACTION_MIDNIGHT_REFRESH" />
             </intent-filter>
 
             <meta-data
@@ -84,7 +94,10 @@
                 android:resource="@xml/overtime_widget_compact_info" />
         </receiver>
 
-        <!-- 桌面小组件 - 方形版 2×2 -->
+        <!--
+             桌面小组件 - 方形版 2×2
+             BUG #3 修复：增加 BOOT_COMPLETED 和 ACTION_MIDNIGHT_REFRESH
+        -->
         <receiver
             android:name="com.overtime.tracker.widget.OvertimeWidgetSquare"
             android:exported="true"
@@ -95,6 +108,8 @@
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.overtime.tracker.ACTION_MIDNIGHT_REFRESH" />
             </intent-filter>
 
             <meta-data

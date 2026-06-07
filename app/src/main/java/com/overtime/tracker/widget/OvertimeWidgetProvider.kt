@@ -1,5 +1,6 @@
 package com.overtime.tracker.widget
 
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -13,7 +14,16 @@ import com.overtime.tracker.data.AppDatabase
 import com.overtime.tracker.util.DateUtils
 import com.overtime.tracker.util.OvertimeCalculator
 import kotlinx.coroutines.*
+import java.util.Calendar
 
+/**
+ * 小组件 Provider（v1.3 更新）
+ *
+ * 修复（BUG #3）：增加午夜定时刷新机制
+ * - 部分国产 ROM 不发送 ACTION_DATE_CHANGED 广播
+ * - 通过 AlarmManager 设置午夜闹钟，确保跨天后小组件自动刷新
+ * - 监听 BOOT_COMPLETED 重新设置闹钟
+ */
 abstract class OvertimeWidgetProvider : AppWidgetProvider() {
 
     enum class WidgetType { STANDARD, COMPACT, SQUARE }
@@ -22,18 +32,45 @@ abstract class OvertimeWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             updateWidget(context, appWidgetManager, appWidgetId)
         }
+        // 每次更新时确保午夜闹钟已设置
+        scheduleMidnightAlarm(context)
+    }
+
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        // 第一个小组件创建时设置午夜闹钟
+        scheduleMidnightAlarm(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        // 最后一个小组件移除时取消闹钟
+        cancelMidnightAlarm(context)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         when (intent.action) {
             Intent.ACTION_TIME_CHANGED, Intent.ACTION_DATE_CHANGED,
-            Intent.ACTION_TIMEZONE_CHANGED, Intent.ACTION_SCREEN_ON -> updateAllWidgets(context)
+            Intent.ACTION_TIMEZONE_CHANGED, Intent.ACTION_SCREEN_ON,
+            Intent.ACTION_BOOT_COMPLETED -> {
+                updateAllWidgets(context)
+                scheduleMidnightAlarm(context)
+            }
+            ACTION_MIDNIGHT_REFRESH -> {
+                // 午夜闹钟触发：刷新小组件 + 设置下一个闹钟
+                updateAllWidgets(context)
+                scheduleMidnightAlarm(context)
+            }
         }
     }
 
     companion object {
         private val widgetScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+        /** 午夜刷新的自定义 Action */
+        private const val ACTION_MIDNIGHT_REFRESH = "com.overtime.tracker.ACTION_MIDNIGHT_REFRESH"
+        private const val MIDNIGHT_REQUEST_CODE = 99999
 
         fun updateAllWidgets(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
@@ -118,6 +155,54 @@ abstract class OvertimeWidgetProvider : AppWidgetProvider() {
                     e.printStackTrace()
                 }
             }
+        }
+
+        /**
+         * 设置午夜闹钟：计算到下一个午夜的时间，通过 AlarmManager 触发小组件刷新
+         * 使用 set() — 不需要 SCHEDULE_EXACT_ALARM 权限
+         * 在 Doze 模式下可能有几分钟延迟，但对"跨天刷新"场景完全够用
+         */
+        private fun scheduleMidnightAlarm(context: Context) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, OvertimeWidgetProvider::class.java).apply {
+                action = ACTION_MIDNIGHT_REFRESH
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, MIDNIGHT_REQUEST_CODE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            // 计算下一个午夜时间
+            val midnight = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, 1)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+
+            // set() + RTC_WAKEUP：系统会自动在合适时机唤醒设备触发
+            // 不需要额外权限，系统保证在非精确时间窗口内触发
+            alarmManager.set(
+                AlarmManager.RTC_WAKEUP,
+                midnight.timeInMillis,
+                pendingIntent
+            )
+        }
+
+        /**
+         * 取消午夜闹钟
+         */
+        private fun cancelMidnightAlarm(context: Context) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, OvertimeWidgetProvider::class.java).apply {
+                action = ACTION_MIDNIGHT_REFRESH
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, MIDNIGHT_REQUEST_CODE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pendingIntent)
         }
     }
 }

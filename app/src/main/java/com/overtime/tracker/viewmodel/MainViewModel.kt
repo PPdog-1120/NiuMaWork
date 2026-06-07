@@ -14,12 +14,18 @@ import com.overtime.tracker.util.DateUtils
 import com.overtime.tracker.util.DataExporter
 import com.overtime.tracker.util.OvertimeCalculator
 import com.overtime.tracker.widget.WidgetClockReceiver
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.io.File
+import java.util.Calendar
 
 /**
  * 主页 ViewModel（v1.3 更新：净加班、弹性归一化）
+ *
+ * 修复：跨天后自动刷新今日打卡状态（不再需要用户手动回到 App）
+ * - subscribeToToday(): 订阅当天的打卡 Flow
+ * - scheduleMidnightRefresh(): 定时到午夜自动切换
+ * - refreshTodayIfNeeded(): ON_RESUME 兜底
  */
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -76,6 +82,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isRestDay: Boolean
         get() = !settings.value.isWorkDay(DateUtils.today())
 
+    // ========== 跨天修复：追踪当前订阅的日期 ==========
+    private var currentDate: String = DateUtils.today()
+    private var todayJob: Job? = null
+    private var midnightJob: Job? = null
+
     /** Widget 打卡后自动刷新 UI */
     private val widgetClockReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
@@ -88,11 +99,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
-        viewModelScope.launch {
-            dao.getByDateFlow(DateUtils.today()).collect { record ->
-                _todayRecord.value = record
-            }
-        }
+        subscribeToToday()
+        scheduleMidnightRefresh()
         refreshAccumulated()
 
         val filter = IntentFilter(WidgetClockReceiver.ACTION_WIDGET_CLOCK_CHANGED)
@@ -105,8 +113,63 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
+        midnightJob?.cancel()
         try { getApplication<Application>().unregisterReceiver(widgetClockReceiver) } catch (_: Exception) { }
     }
+
+    // ========== 跨天修复核心逻辑 ==========
+
+    /**
+     * 订阅当天的打卡 Flow（取消旧的，重新订阅新的）
+     */
+    private fun subscribeToToday() {
+        todayJob?.cancel()
+        currentDate = DateUtils.today()
+        todayJob = viewModelScope.launch {
+            dao.getByDateFlow(currentDate).collect { record ->
+                _todayRecord.value = record
+            }
+        }
+    }
+
+    /**
+     * 定时到午夜自动刷新：计算距离下一个午夜的毫秒数，到点后切换日期并递归调度
+     */
+    private fun scheduleMidnightRefresh() {
+        midnightJob?.cancel()
+        midnightJob = viewModelScope.launch {
+            val now = Calendar.getInstance()
+            val midnight = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, 1)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            val delayMs = midnight.timeInMillis - now.timeInMillis
+            delay(delayMs)
+
+            // 零点到了，切换到新的一天
+            subscribeToToday()
+            refreshAccumulated()
+
+            // 递归调度下一个午夜
+            scheduleMidnightRefresh()
+        }
+    }
+
+    /**
+     * ON_RESUME 兜底：防止进程被杀恢复后日期不一致
+     */
+    fun refreshTodayIfNeeded() {
+        val today = DateUtils.today()
+        if (today != currentDate) {
+            subscribeToToday()
+            scheduleMidnightRefresh()
+        }
+    }
+
+    // ========== 打卡逻辑（无变化） ==========
 
     /** 上班打卡 */
     fun clockIn() {

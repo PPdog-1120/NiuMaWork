@@ -17,6 +17,8 @@ import com.overtime.tracker.data.UserSettings
  *   加班时长 = max(0, 总时长)
  *
  * 净加班 = 总加班 - 总请假
+ *
+ * 修复：跨天场景下午休/晚饭扣除使用原始时间判断，避免误扣
  */
 object OvertimeCalculator {
 
@@ -65,6 +67,10 @@ object OvertimeCalculator {
      * 计算周末/节假日加班时长（分钟）
      *
      * @return 加班时长 >= 0；-1 = 跨天未开启；-2 = 数据异常
+     *
+     * 修复说明（BUG #2）：
+     * 跨天后 endMin 会 +1440，如果用加后的时间去判断是否跨越午休/晚饭，
+     * 会导致所有跨天场景都被误扣。改为用原始时间（跨天前）判断重叠。
      */
     fun calculateWeekendOvertime(
         startTime: String,
@@ -88,16 +94,35 @@ object OvertimeCalculator {
 
         var total = endMin - startMin
 
+        // ── 修复：用原始时间判断是否跨越午休/晚饭 ──
+        // startMin 和 rawEndMin 都是当天 0~1440 范围内的原始值
+        val rawEndMin = UserSettings.timeToMinutes(endTime)
+
         // 判断是否跨越午休
         val lunchS = UserSettings.timeToMinutes(settings.weekendLunchStart)
         val lunchE = UserSettings.timeToMinutes(settings.weekendLunchEnd)
-        if (startMin < lunchE && endMin > lunchS) {
+        val crossesLunch = if (startMin <= rawEndMin) {
+            // 正常情况（未跨天）：检查时间范围是否与午休重叠
+            startMin < lunchE && rawEndMin > lunchS
+        } else {
+            // 跨天情况：startMin > rawEndMin（如 22:00 → 02:00）
+            // 重叠条件：经过了午休时段
+            // 22:00~24:00 不经过午休，00:00~02:00 也不经过午休 → 无重叠
+            // 但如果 startMin < lunchE（如 10:00 → 02:00），则经过了午休
+            startMin < lunchE || rawEndMin > lunchS
+        }
+        if (crossesLunch) {
             total -= settings.weekendLunchDuration
         }
 
-        // 判断是否跨越晚饭（18:00 起，扣除时长由配置决定）
+        // 判断是否跨越晚饭（18:00 起）
         val dinnerEnd = DINNER_START + settings.weekendDinnerDeduct
-        if (startMin < dinnerEnd && endMin > DINNER_START) {
+        val crossesDinner = if (startMin <= rawEndMin) {
+            startMin < dinnerEnd && rawEndMin > DINNER_START
+        } else {
+            startMin < dinnerEnd || rawEndMin > DINNER_START
+        }
+        if (crossesDinner) {
             total -= settings.weekendDinnerDeduct
         }
 
